@@ -1,77 +1,74 @@
-import { useState, useReducer, useEffect } from 'react'
-import { Todo } from './types'
-import TodoList from './components/TodoList'
-import TodoForm from './components/TodoForm'
-import './App.css'
+// src/components/App.tsx
+import { useReducer, useEffect } from 'react';
+import TodoForm from './components/TodoForm';
+import TodoList from './components/TodoList';
+import Footer from './components/Footer';
+import { Action, AppState} from './types';
+import './App.scss';
 
- type ActionType = 
-|{type: 'ADD_TODO'; payload: Todo}
-|{type: 'DELETE_TODO'; payload: number}
-|{type: 'EDIT_TODO'; payload: Todo}
-|{type: 'TOGGLE_TODO'; payload: number}
-|{type: "LOAD_TODOS"; payload: Todo[] }
-
-
-export const reducer = (state: Todo[], action: ActionType): Todo[] => {
-  switch(action.type){
-    case 'ADD_TODO':
-    return [...state, action.payload];
-    case 'DELETE_TODO':  
-    return state.filter(todo => todo.id !== action.payload);
-    case 'EDIT_TODO':
-    return state.map(todo => todo.id === action.payload.id ? action.payload : todo);
-    case 'TOGGLE_TODO':
-    return state.map(todo => todo.id === action.payload ? {...todo, isCompleted: !todo.isCompleted} : todo);
-    case 'LOAD_TODOS':
-      return action.payload;
-    default:
-      return state;
-  }
-}
-
-function App() {
-const [todos, dispatch] = useReducer(reducer, [], () =>{
-  const todos = localStorage.getItem('todos');
-  return todos ? JSON.parse(todos) : [];
-
-});
-const [todoToEdit, setTodoToEdit] = useState<Todo | null>(null);
-
-
-useEffect(() => {
-  localStorage.setItem('todos', JSON.stringify(todos));
-}, [todos]);
-
-const handleSaveTodo = (todo: Todo) => {
-  if(todoToEdit){
-    dispatch({type: 'EDIT_TODO', payload: todo});
-    setTodoToEdit(null);
-  }else{
-    dispatch({type: 'ADD_TODO', payload: todo});
-  }
+const initialState: AppState = {
+    todos: JSON.parse(localStorage.getItem('todos') || '[]'),
+    filter: 'all'
 };
 
-const handleDeleteTodo = (id: number) => {
-  dispatch({type: 'DELETE_TODO', payload: id});
+const reducer = (state: AppState, action: Action): AppState => {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return {
+                ...state,
+                todos: [...state.todos, { id: Date.now(), text: action.payload, completed: false }]
+            };
+        case 'TOGGLE_TODO':
+            return {
+                ...state,
+                todos: state.todos.map(todo => todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo)
+            };
+        case 'EDIT_TODO':
+            return {
+                ...state,
+                todos: state.todos.map(todo => todo.id === action.payload.id ? { ...todo, text: action.payload.text } : todo)
+            };
+        case 'DELETE_TODO':
+            return {
+                ...state,
+                todos: state.todos.filter(todo => todo.id !== action.payload)
+            };
+        case 'CLEAR_COMPLETED':
+            return {
+                ...state,
+                todos: state.todos.filter(todo => !todo.completed)
+            };
+        case 'SET_FILTER':
+            return {
+                ...state,
+                filter: action.payload
+            };
+        default:
+            return state;
+    }
+};
+
+function App() {
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const { todos, filter } = state;
+
+    useEffect(() => {
+        localStorage.setItem('todos', JSON.stringify(todos));
+    }, [todos]);
+
+    const filteredTodos = todos.filter(todo => {
+        if (filter === 'active') return !todo.completed;
+        if (filter === 'completed') return todo.completed;
+        return true;
+    });
+
+    return (
+        <div className="app">
+            <TodoForm dispatch={dispatch} />
+            <TodoList todos={filteredTodos} dispatch={dispatch} />
+            <Footer todos={todos} dispatch={dispatch} />
+        </div>
+    );
 }
 
-const handleEditTodo = (id: number) => {
-  const todo = todos.find(t => t.id === id);
-  if(todo){
-    setTodoToEdit(todo);
-  }
-}
-
-
-
-
-  return (
-    <div className='container'>
-      <h1>Todo</h1>
-      <TodoForm onSave={handleSaveTodo} todoToEdit={todoToEdit} />
-      <TodoList todos={todos} onDelete={handleDeleteTodo} onEdit={handleEditTodo} />
-    </div>
-  )
-}
-
-export default App
+export default App;

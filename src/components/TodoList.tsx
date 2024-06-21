@@ -1,41 +1,49 @@
-import {Todo} from "../types";
-import './todolist.css';
+import React, { useState } from 'react';
+import { Todo, Action } from '../types';
+import './todolist.scss';
 
-
-interface TodoListProps{
+interface TodoListProps {
     todos: Todo[];
-    onDelete: (id: number) => void;
-    onEdit: (id: number) => void;
+    dispatch: React.Dispatch<Action>;
 }
 
-const TodoList: React.FC<TodoListProps> = ({todos, onDelete, onEdit}) => {
-    
-    return(
-        <div className="todoList">
-            <ul>
-                {todos.map(todo => (
-                    <li key={todo.id} className={`todo-item ${todo.isCompleted ? 'completed' : ''}`}>
-                        <label>
-                            <input
-                             type="checkbox"
-                             checked ={todo.isCompleted} 
-                            /> 
-                        </label>
-                        {todo.text}
-                        <button onClick={() => onEdit(todo.id)}>Edit</button>
-                        <button onClick={() => onDelete(todo.id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
-            <div className="bottom-list">
-                <span>5 items left</span>
-                <span>All</span>
-                <span>Active</span>
-                <span>Completed</span>
-                <span>Clear Completed</span>
-            </div>
-        </div>
-    )
+function TodoList({ todos, dispatch }: TodoListProps) {
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editText, setEditText] = useState('');
+
+    const handleEdit = (id: number, text: string) => {
+        setEditingId(id);
+        setEditText(text);
+    };
+
+    const saveEdit = (id: number) => {
+        dispatch({ type: 'EDIT_TODO', payload: { id, text: editText } });
+        setEditingId(null);
+    };
+
+    return (
+        <ul className="todo-list">
+            {todos.map(todo => (
+                <li key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+                    {editingId === todo.id ? (
+                        <input
+                            value={editText}
+                            onChange={(e) => setEditText(e.target.value)}
+                            onBlur={() => saveEdit(todo.id)}
+                            onKeyDown={(e) => e.key === 'Enter' && saveEdit(todo.id)}
+                            autoFocus
+                        />
+                    ) : (
+                        <span onClick={() => dispatch({ type: 'TOGGLE_TODO', payload: todo.id })}>
+                            {todo.text}
+                        </span>
+                    )}
+                    <button onClick={() => handleEdit(todo.id, todo.text)}>Edit</button>
+                    <button onClick={() => dispatch({ type: 'DELETE_TODO', payload: todo.id })}>Delete</button>
+                </li>
+            ))}
+        </ul>
+    );
 }
 
 export default TodoList;

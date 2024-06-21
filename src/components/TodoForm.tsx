@@ -1,35 +1,31 @@
-import {useState} from 'react';
-import { Todo } from '../types';
-import './todoform.css';
-interface TodoFormProps{
-    onSave: (todo: Todo) => void;
-    todoToEdit?: Todo | null;
+import React, { useState } from 'react';
+import { Action } from '../types';
+import './todoform.scss';
+
+interface TodoFormProps {
+    dispatch: React.Dispatch<Action>;
 }
 
+function TodoForm({ dispatch }: TodoFormProps) {
+    const [input, setInput] = useState('');
 
-const TodoForm: React.FC <TodoFormProps> = ({onSave, todoToEdit}) => {
-    const [text, setText] = useState(todoToEdit ? todoToEdit.text : '');
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if(!text.trim()) return;
-
-        onSave({id: todoToEdit ? todoToEdit.id : Date.now(), text, isCompleted: false});
-        setText('');
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (!input.trim()) return;
+        dispatch({ type: 'ADD_TODO', payload: input });
+        setInput('');
     };
 
-
-    return(
-        <div className="form">
-           
-              <form onSubmit={handleSubmit}>
-            <input type="text" value={text} onChange={(e) => setText(e.target.value)} placeholder='Add todo...'/>
-            <button type="submit">Save</button> 
+    return (
+        <form onSubmit={handleSubmit} className="todo-form">
+            <input
+                className="todo-input"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Create a new todo..."
+            />
         </form>
-       
-        </div>
-      
-    )
+    );
 }
 
 export default TodoForm;

@@ -1,0 +1,33 @@
+
+.todo-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .todo-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+
+        .todo-checkbox {
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .checkmark {
+            color: green;
+        }
+
+        .todo-text {
+            flex-grow: 1;
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: red;
+        }
+    }
+}

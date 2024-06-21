@@ -1,0 +1,27 @@
+footer {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    font-size: 14px;
+
+    span {
+        color: #666;
+    }
+
+    button {
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        font-size: 14px;
+
+        &:hover {
+            color: #333;
+        }
+    }
+}
