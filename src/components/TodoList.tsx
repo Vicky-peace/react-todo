@@ -1,6 +1,7 @@
 import {Todo} from "../types";
 import './todolist.css';
 
+
 interface TodoListProps{
     todos: Todo[];
     onDelete: (id: number) => void;
@@ -8,6 +9,7 @@ interface TodoListProps{
 }
 
 const TodoList: React.FC<TodoListProps> = ({todos, onDelete, onEdit}) => {
+    
     return(
         <div className="todoList">
             <ul>
@@ -16,7 +18,8 @@ const TodoList: React.FC<TodoListProps> = ({todos, onDelete, onEdit}) => {
                         <label>
                             <input
                              type="checkbox"
-                             checked ={todo.isCompleted} /> 
+                             checked ={todo.isCompleted} 
+                            /> 
                         </label>
                         {todo.text}
                         <button onClick={() => onEdit(todo.id)}>Edit</button>

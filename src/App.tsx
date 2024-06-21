@@ -4,13 +4,15 @@ import TodoList from './components/TodoList'
 import TodoForm from './components/TodoForm'
 import './App.css'
 
-type ActionType = 
+ type ActionType = 
 |{type: 'ADD_TODO'; payload: Todo}
 |{type: 'DELETE_TODO'; payload: number}
 |{type: 'EDIT_TODO'; payload: Todo}
+|{type: 'TOGGLE_TODO'; payload: number}
+|{type: "LOAD_TODOS"; payload: Todo[] }
 
 
-const reducer = (state: Todo[], action: ActionType): Todo[] => {
+export const reducer = (state: Todo[], action: ActionType): Todo[] => {
   switch(action.type){
     case 'ADD_TODO':
     return [...state, action.payload];
@@ -18,6 +20,10 @@ const reducer = (state: Todo[], action: ActionType): Todo[] => {
     return state.filter(todo => todo.id !== action.payload);
     case 'EDIT_TODO':
     return state.map(todo => todo.id === action.payload.id ? action.payload : todo);
+    case 'TOGGLE_TODO':
+    return state.map(todo => todo.id === action.payload ? {...todo, isCompleted: !todo.isCompleted} : todo);
+    case 'LOAD_TODOS':
+      return action.payload;
     default:
       return state;
   }
