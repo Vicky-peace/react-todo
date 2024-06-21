@@ -14,7 +14,7 @@ const TodoForm: React.FC <TodoFormProps> = ({onSave, todoToEdit}) => {
         e.preventDefault();
         if(!text.trim()) return;
 
-        onSave({id: todoToEdit ? todoToEdit.id : Date.now(), text, completed: false});
+        onSave({id: todoToEdit ? todoToEdit.id : Date.now(), text, isCompleted: false});
         setText('');
     };
 
