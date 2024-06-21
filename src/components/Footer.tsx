@@ -1,5 +1,6 @@
 import React from 'react';
 import { Todo, Action,FilterType } from '../types';
+import './footer.scss';
 
 interface FooterProps {
     todos: Todo[];
