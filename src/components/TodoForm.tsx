@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import { Todo } from '../types';
-
+import './todoform.css';
 interface TodoFormProps{
     onSave: (todo: Todo) => void;
     todoToEdit?: Todo | null;
@@ -20,10 +20,15 @@ const TodoForm: React.FC <TodoFormProps> = ({onSave, todoToEdit}) => {
 
 
     return(
-        <form onSubmit={handleSubmit}>
-            <input type="text" value={text} onChange={(e) => setText(e.target.value)} />
-            <button type="submit">Save</button>
+        <div className="form">
+           
+              <form onSubmit={handleSubmit}>
+            <input type="text" value={text} onChange={(e) => setText(e.target.value)} placeholder='Add todo...'/>
+            <button type="submit">Save</button> 
         </form>
+       
+        </div>
+      
     )
 }
 

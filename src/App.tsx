@@ -1,4 +1,4 @@
-import { useState, useReducer } from 'react'
+import { useState, useReducer, useEffect } from 'react'
 import { Todo } from './types'
 import TodoList from './components/TodoList'
 import TodoForm from './components/TodoForm'
@@ -24,8 +24,17 @@ const reducer = (state: Todo[], action: ActionType): Todo[] => {
 }
 
 function App() {
-const [todos, dispatch] = useReducer(reducer, []);
+const [todos, dispatch] = useReducer(reducer, [], () =>{
+  const todos = localStorage.getItem('todos');
+  return todos ? JSON.parse(todos) : [];
+
+});
 const [todoToEdit, setTodoToEdit] = useState<Todo | null>(null);
+
+
+useEffect(() => {
+  localStorage.setItem('todos', JSON.stringify(todos));
+}, [todos]);
 
 const handleSaveTodo = (todo: Todo) => {
   if(todoToEdit){
@@ -52,7 +61,7 @@ const handleEditTodo = (id: number) => {
 
   return (
     <div className='container'>
-      <h1>Todo App</h1>
+      <h1>Todo</h1>
       <TodoForm onSave={handleSaveTodo} todoToEdit={todoToEdit} />
       <TodoList todos={todos} onDelete={handleDeleteTodo} onEdit={handleEditTodo} />
     </div>
