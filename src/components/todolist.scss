@@ -1,33 +1,54 @@
-
 .todo-list {
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
     list-style: none;
-    margin: 0;
     padding: 0;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
     .todo-item {
         display: flex;
         align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #ccc;
+        padding: 10px 20px;
+        border-bottom: 1px solid #eee;
 
-        .todo-checkbox {
-            cursor: pointer;
-            margin-right: 10px;
+        &:last-child {
+            border-bottom: none;
         }
 
-        .checkmark {
-            color: green;
+        .todo-checkbox {
+            margin-right: 10px;
+            cursor: pointer;
+            user-select: none;
+
+            &:before {
+                content: '';
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                border: 2px solid #bbb;
+                margin-right: 10px;
+                vertical-align: middle;
+            }
+
+            &.checked:before {
+                border-color: #0f0;
+                background-color: #0f0;
+            }
         }
 
         .todo-text {
-            flex-grow: 1;
+            flex: 1;
+            user-select: none;
         }
 
         .delete-button {
             background: none;
             border: none;
+            color: #f00;
             cursor: pointer;
-            color: red;
         }
     }
 }
